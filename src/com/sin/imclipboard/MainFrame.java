@@ -23,10 +23,12 @@ public class MainFrame extends JFrame {
 	private static final long serialVersionUID = 2269971701250845501L;
 	private ImageView imageView = null;
 	private static final String AppName = "IMClipboard";
-	private static final String imagePath = "/tmp/images/";
+	private static String imagePath = "/tmp/images/";
 	private static final String formatname = "png";
 	public MainFrame() throws HeadlessException {
 		super(AppName);
+		
+		imagePath = System.getProperty("java.io.tmpdir")+"images/";
 		
 		this.imageView = new ImageView();
 		this.add(imageView);
