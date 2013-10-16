@@ -74,7 +74,6 @@ public class MainFrame extends JFrame implements UploaderCallback {
 		Transferable transferable = clipboard.getContents(null);
 		if (transferable != null) {
 			if (transferable.isDataFlavorSupported(DataFlavor.imageFlavor)) {
-//				System.out.println("img");
 				try {
 					Image img = (Image) transferable.getTransferData(DataFlavor.imageFlavor);
 					BufferedImage bi = new BufferedImage(img.getWidth(null), img.getHeight(null), BufferedImage.TYPE_INT_RGB);
