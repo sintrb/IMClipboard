@@ -8,6 +8,7 @@ import java.awt.TextField;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.Transferable;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -54,27 +55,40 @@ public class MainFrame extends JFrame implements UploaderCallback {
 				}
 			}
 		});
+		this.urlText.addMouseListener(new MouseAdapter(){
 
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				copyUrl();
+			}
+			
+		});
 		new File(imagePath).mkdirs();
 
-		this.updateImage();
 		this.setSize(300, 300);
 		this.setLocationRelativeTo(null);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		this.uploader = new Uploader(this);
+		
+		this.updateImage();
 	}
 
 	private String getImageName() {
 		return imagePath + System.currentTimeMillis() + "." + formatname;
 	}
 
+	
+	private void copyUrl(){
+		Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+		clipboard.setContents(new StringSelection(urlText.getText().trim()), null);
+	}
+	
 	private void updateImage() {
 		Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
 		Transferable transferable = clipboard.getContents(null);
 		if (transferable != null) {
 			if (transferable.isDataFlavorSupported(DataFlavor.imageFlavor)) {
-//				System.out.println("img");
 				try {
 					Image img = (Image) transferable.getTransferData(DataFlavor.imageFlavor);
 					BufferedImage bi = new BufferedImage(img.getWidth(null), img.getHeight(null), BufferedImage.TYPE_INT_RGB);
@@ -92,7 +106,8 @@ public class MainFrame extends JFrame implements UploaderCallback {
 							public void run() {
 								String imgurl = uploader.uploadImage(imagefile);
 								if (imgurl != null) {
-									urlText.setText(String.format("%s%s", Uploader.uploadUrl, imgurl));
+									urlText.setText(String.format("%s%s", Uploader.viewUrl, imgurl));
+									copyUrl();
 								}
 							}
 						}).start();
@@ -101,7 +116,6 @@ public class MainFrame extends JFrame implements UploaderCallback {
 					e.printStackTrace();
 				}
 			} else if (transferable.isDataFlavorSupported(DataFlavor.stringFlavor)) {
-//				System.out.println("str");
 			}
 		}
 	}

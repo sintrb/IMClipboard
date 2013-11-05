@@ -17,6 +17,8 @@ import java.net.URL;
 public class Uploader {
 	public static int BUF_LEN = 256;
 	// public static String uploadUrl = "http://127.0.0.1:8080/upload/";
+	
+	public static String viewUrl = "http://bigstorage.sinaapp.com/";
 	public static String uploadUrl = "http://bigstorage.sinaapp.com/upload/";
 	public static String fullUploadUrl = uploadUrl+"new";
 	public static final String NL = "\r\n";
