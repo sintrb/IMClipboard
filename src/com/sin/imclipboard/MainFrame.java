@@ -1,6 +1,7 @@
 package com.sin.imclipboard;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.HeadlessException;
 import java.awt.Image;
@@ -65,13 +66,13 @@ public class MainFrame extends JFrame implements UploaderCallback {
 		});
 		new File(imagePath).mkdirs();
 
-		this.setSize(300, 300);
 		this.setLocationRelativeTo(null);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		this.uploader = new Uploader(this);
 		
 		this.updateImage();
+		this.pack();
 	}
 
 	private String getImageName() {
@@ -84,6 +85,11 @@ public class MainFrame extends JFrame implements UploaderCallback {
 		clipboard.setContents(new StringSelection(urlText.getText().trim()), null);
 	}
 	
+	private void refreshSize(){
+		this.pack();
+		this.setLocationRelativeTo(null);
+	}
+	
 	private void updateImage() {
 		Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
 		Transferable transferable = clipboard.getContents(null);
@@ -91,11 +97,18 @@ public class MainFrame extends JFrame implements UploaderCallback {
 			if (transferable.isDataFlavorSupported(DataFlavor.imageFlavor)) {
 				try {
 					Image img = (Image) transferable.getTransferData(DataFlavor.imageFlavor);
-					BufferedImage bi = new BufferedImage(img.getWidth(null), img.getHeight(null), BufferedImage.TYPE_INT_RGB);
+					BufferedImage bi = new BufferedImage(img.getWidth(null), img.getHeight(null), BufferedImage.TYPE_3BYTE_BGR);
 					Graphics g = bi.getGraphics();
 					g.drawImage(img, 0, 0, null);
 					imageView.setImage(img);
-
+					
+					Dimension scrSize = Toolkit.getDefaultToolkit().getScreenSize();
+					if(scrSize.height > img.getHeight(null) && scrSize.width>img.getWidth(null)){
+						imageView.setPreferredSize(new Dimension(img.getWidth(null), img.getHeight(null)));
+						urlText.setPreferredSize(new Dimension(img.getWidth(null), urlText.getPreferredSize(0).height));
+						this.refreshSize();
+					}
+					
 					final String imagefile = getImageName();
 					ImageIO.write(bi, formatname, new File(imagefile));
 					this.setTitle(imagefile);
@@ -117,6 +130,9 @@ public class MainFrame extends JFrame implements UploaderCallback {
 				}
 			} else if (transferable.isDataFlavorSupported(DataFlavor.stringFlavor)) {
 			}
+		}
+		else{
+			this.refreshSize();
 		}
 	}
 

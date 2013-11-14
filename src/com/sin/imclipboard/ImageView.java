@@ -16,12 +16,13 @@ public class ImageView extends JPanel {
 	private Image image;
 
 	public ImageView() {
-		super();
+		this(null);
 	}
 
 	public ImageView(Image image) {
 		super();
 		this.image = image;
+		this.setPreferredSize(new Dimension(200,200));
 	}
 
 	@Override
@@ -34,11 +35,6 @@ public class ImageView extends JPanel {
 			int imgh = image.getHeight(null);
 			g.drawImage(image, 0, 0, tw, th, 0, 0, imgw, imgh, null);
 		}
-	}
-
-	@Override
-	public Dimension getMinimumSize() {
-		return new Dimension(100, 100);
 	}
 
 	public Image getImage() {
